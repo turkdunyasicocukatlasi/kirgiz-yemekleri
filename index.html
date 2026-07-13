@@ -1,0 +1,1117 @@
+﻿<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kırgız Yemekleri</title>
+  <style>
+    :root {
+      --gold: #ffd516;
+      --wood: #3b2015;
+      --wood-deep: #1f100b;
+      --cream: #fff4d8;
+      --shadow: rgba(0, 0, 0, 0.58);
+      --dish-size: clamp(130px, 10.35vw, 167px);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: #0b0705;
+      color: var(--cream);
+      font-family: "Trebuchet MS", Arial, sans-serif;
+      user-select: none;
+    }
+
+    button {
+      border: 0;
+      padding: 0;
+      background: transparent;
+      color: inherit;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    button:focus-visible {
+      outline: 4px solid rgba(255, 213, 22, 0.88);
+      outline-offset: 4px;
+      border-radius: 18px;
+    }
+
+    .app {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      min-width: 320px;
+      min-height: 520px;
+      overflow: hidden;
+      background: #0b0705 url("arkaplan-animation%201-000.png") center / cover no-repeat;
+    }
+
+    .app::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 50% 53%, rgba(255, 245, 220, 0.08), transparent 36%),
+        linear-gradient(180deg, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.28));
+      z-index: 1;
+    }
+
+    .screen {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      display: none;
+    }
+
+    .screen.is-active {
+      display: block;
+    }
+
+    .intro {
+      text-align: center;
+    }
+
+    .intro.is-active {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .intro::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(240, 240, 230, 0.48);
+      z-index: -1;
+    }
+
+    .intro-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: min(88vw, 980px);
+      padding-top: clamp(24px, 4vh, 52px);
+    }
+
+    .logo {
+      width: min(72vw, 880px);
+      max-height: 58vh;
+      object-fit: contain;
+      filter: drop-shadow(0 24px 20px rgba(0, 0, 0, 0.45));
+    }
+
+    .start-button {
+      width: clamp(112px, 15vw, 176px);
+      aspect-ratio: 1;
+      margin-top: clamp(-8px, 1.4vh, 12px);
+      animation: startPulse 1.35s ease-in-out infinite;
+      transition: transform 160ms ease, filter 160ms ease;
+    }
+
+    .start-button:hover {
+      animation-play-state: paused;
+      transform: translateY(-2px) scale(1.08);
+      filter: brightness(1.08);
+    }
+
+    .round-button:hover,
+    .menu-sign:hover,
+    .food-card:hover {
+      transform: translateY(-2px) scale(1.02);
+      filter: brightness(1.08);
+    }
+
+    @keyframes startPulse {
+      0%,
+      100% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.09);
+      }
+    }
+
+    .start-button img,
+    .round-button img,
+    .menu-sign img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .game {
+      z-index: 3;
+    }
+
+    .top-actions {
+      position: absolute;
+      top: clamp(10px, 1.8vw, 22px);
+      right: clamp(10px, 1.7vw, 22px);
+      z-index: 10;
+      display: grid;
+      gap: clamp(10px, 1.3vw, 16px);
+    }
+
+    .round-button {
+      width: clamp(58px, 7vw, 88px);
+      aspect-ratio: 1;
+      transition: transform 160ms ease, filter 160ms ease;
+    }
+
+    .menu-sign {
+      position: absolute;
+      top: clamp(40px, 8vh, 84px);
+      left: clamp(12px, 2vw, 32px);
+      z-index: 8;
+      width: clamp(170px, 24vw, 338px);
+      aspect-ratio: 451 / 907;
+      transform-origin: top center;
+      transition: transform 160ms ease, filter 160ms ease;
+      filter: drop-shadow(0 16px 18px rgba(0, 0, 0, 0.42));
+    }
+
+    .game.is-active .menu-sign {
+      animation: menuDrop 780ms cubic-bezier(.18, .92, .24, 1.08) both;
+    }
+
+    @keyframes menuDrop {
+      from {
+        opacity: 0;
+        transform: translateY(-115%) rotate(-3deg);
+      }
+
+      72% {
+        opacity: 1;
+        transform: translateY(3%) rotate(1deg);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) rotate(0);
+      }
+    }
+
+    .table-zone {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: min(62vw, 980px);
+      height: min(32vw, 470px);
+      transform: translate(-50%, -20%);
+      z-index: 4;
+      pointer-events: none;
+    }
+
+    .served-dish {
+      position: absolute;
+      width: var(--dish-size);
+      aspect-ratio: 1;
+      left: var(--x);
+      top: var(--y);
+      transform: translate(-50%, -50%) scale(0.78);
+      opacity: 0;
+      animation: serveDish 460ms cubic-bezier(.18, .89, .28, 1.2) forwards;
+      filter: drop-shadow(0 18px 14px rgba(0, 0, 0, 0.36));
+      pointer-events: auto;
+      cursor: pointer;
+    }
+
+    .served-dish img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .served-dish:hover {
+      filter: brightness(1.08) drop-shadow(0 18px 14px rgba(0, 0, 0, 0.36));
+    }
+
+    @keyframes serveDish {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -80%) scale(0.35) rotate(-7deg);
+      }
+
+      to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1) rotate(0);
+      }
+    }
+
+    .progress {
+      position: absolute;
+      left: 50%;
+      bottom: clamp(16px, 3vh, 34px);
+      z-index: 9;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      border: 2px solid rgba(255, 213, 22, 0.62);
+      border-radius: 999px;
+      background: rgba(37, 19, 10, 0.72);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
+      color: #fff0bd;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      text-shadow: 0 2px 3px rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+    }
+
+    .table-error {
+      position: absolute;
+      left: 50%;
+      bottom: clamp(64px, 9vh, 100px);
+      z-index: 12;
+      display: none;
+      transform: translateX(-50%);
+      padding: 12px 18px;
+      border: 2px solid rgba(255, 213, 22, 0.8);
+      border-radius: 999px;
+      background: rgba(49, 20, 11, 0.92);
+      color: var(--gold);
+      font-weight: 900;
+      text-align: center;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.55);
+      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.38);
+      backdrop-filter: blur(4px);
+    }
+
+    .table-error.is-visible {
+      display: block;
+      animation: errorPop 220ms ease-out both;
+    }
+
+    @keyframes errorPop {
+      from {
+        opacity: 0;
+        transform: translate(-50%, 10px) scale(0.92);
+      }
+
+      to {
+        opacity: 1;
+        transform: translate(-50%, 0) scale(1);
+      }
+    }
+
+    .progress-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.34);
+    }
+
+    .progress-dot.is-filled {
+      background: var(--gold);
+      box-shadow: 0 0 10px rgba(255, 213, 22, 0.78);
+    }
+
+    .dish-detail-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 16;
+      display: none;
+      background: rgba(0, 0, 0, 0.62);
+      backdrop-filter: blur(2px);
+    }
+
+    .dish-detail-overlay.is-open {
+      display: block;
+    }
+
+    .detail-dish-stage {
+      position: absolute;
+      left: clamp(96px, 11vw, 170px);
+      top: 50%;
+      width: min(50vw, 676px);
+      height: min(88vh, 676px);
+      transform: translateY(-48%);
+      display: grid;
+      place-items: center;
+      pointer-events: none;
+    }
+
+    .detail-dish-stage img {
+      display: block;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 28px 22px rgba(0, 0, 0, 0.46));
+      animation: dishZoomIn 260ms cubic-bezier(.18, .9, .24, 1.08) both;
+    }
+
+    @keyframes dishZoomIn {
+      from {
+        opacity: 0;
+        transform: scale(0.62);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .dish-info {
+      position: absolute;
+      top: clamp(78px, 14vh, 118px);
+      right: clamp(14px, 2vw, 30px);
+      z-index: 18;
+      display: none;
+      width: min(420px, calc(100vw - 32px));
+      max-height: calc(100vh - 96px);
+      overflow: hidden;
+      padding: 18px 20px 18px;
+      border: 3px solid rgba(255, 213, 22, 0.78);
+      border-radius: 14px;
+      background: rgba(43, 21, 11, 0.94);
+      color: #fff2c8;
+      box-shadow: 0 22px 48px rgba(0, 0, 0, 0.48);
+      text-shadow: 0 2px 3px rgba(0, 0, 0, 0.46);
+      backdrop-filter: blur(5px);
+    }
+
+    .dish-info.is-open {
+      display: flex;
+      flex-direction: column;
+      animation: infoPop 180ms ease-out both;
+    }
+
+    .dish-info h2 {
+      margin: 0 44px 8px 0;
+      color: var(--gold);
+      font-size: clamp(24px, 2.7vw, 36px);
+      line-height: 1.05;
+    }
+
+    .dish-info p {
+      margin: 0;
+      overflow: visible;
+      padding-right: 6px;
+      font-size: clamp(15px, 1.4vw, 18px);
+      line-height: 1.42;
+    }
+
+    .dish-info p::-webkit-scrollbar {
+      display: none;
+    }
+
+    .dish-info-close {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: rgba(255, 213, 22, 0.14);
+      color: var(--gold);
+      font-size: 28px;
+      line-height: 1;
+      font-weight: 900;
+    }
+
+    .dish-info-remove {
+      width: 100%;
+      margin-top: 16px;
+      padding: 12px 14px;
+      border: 2px solid rgba(255, 213, 22, 0.74);
+      border-radius: 999px;
+      background: linear-gradient(180deg, #78401f, #31170d);
+      color: var(--gold);
+      font-weight: 900;
+      text-align: center;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.32);
+    }
+
+    .dish-info-remove:hover {
+      filter: brightness(1.08);
+    }
+
+    @keyframes infoPop {
+      from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.96);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .menu-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 20;
+      display: none;
+      padding: clamp(64px, 7vw, 104px) clamp(8px, 2vw, 28px) clamp(18px, 3vw, 32px);
+      background: rgba(0, 0, 0, 0.58);
+      backdrop-filter: blur(2px);
+    }
+
+    .menu-overlay.is-open {
+      display: block;
+    }
+
+    .menu-close {
+      position: absolute;
+      top: clamp(10px, 1.7vw, 22px);
+      right: clamp(10px, 1.7vw, 22px);
+      width: clamp(60px, 7vw, 88px);
+      aspect-ratio: 1;
+      z-index: 25;
+      transition: transform 160ms ease, filter 160ms ease;
+    }
+
+    .menu-close:hover {
+      transform: scale(1.05);
+      filter: brightness(1.1);
+    }
+
+    .menu-close img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .food-grid {
+      width: min(100%, 1560px);
+      height: 100%;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-auto-rows: minmax(0, 1fr);
+      gap: clamp(10px, 1.3vw, 18px);
+      align-content: center;
+    }
+
+    .food-card {
+      position: relative;
+      min-width: 0;
+      min-height: 0;
+      padding: 0;
+      border-radius: 12px;
+      transition: transform 160ms ease, filter 160ms ease, opacity 160ms ease;
+    }
+
+    .food-card.is-served {
+      opacity: 0.55;
+      filter: saturate(0.75);
+      cursor: default;
+    }
+
+    .card-frame {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: fill;
+      z-index: 1;
+    }
+
+    .card-photo {
+      position: absolute;
+      left: 8%;
+      top: 9%;
+      width: 84%;
+      height: 56%;
+      object-fit: cover;
+      z-index: 2;
+      border-radius: 6px;
+    }
+
+    .card-name {
+      position: absolute;
+      left: 9%;
+      right: 9%;
+      bottom: 13%;
+      z-index: 3;
+      color: var(--gold);
+      font-size: clamp(20px, 2.2vw, 38px);
+      line-height: 1;
+      font-weight: 900;
+      text-align: center;
+      text-shadow:
+        0 3px 0 rgba(66, 30, 12, 0.95),
+        0 5px 10px rgba(0, 0, 0, 0.72);
+      white-space: nowrap;
+    }
+
+    .done-ribbon {
+      position: absolute;
+      left: 12%;
+      top: 12%;
+      z-index: 4;
+      display: none;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: rgba(37, 19, 10, 0.82);
+      color: #fff1bc;
+      font-size: clamp(12px, 1vw, 15px);
+      font-weight: 800;
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.38);
+    }
+
+    .food-card.is-served .done-ribbon {
+      display: block;
+    }
+
+    .finish-panel {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      z-index: 30;
+      display: none;
+      width: min(88vw, 520px);
+      padding: 22px;
+      transform: translate(-50%, -50%);
+      border: 3px solid rgba(255, 213, 22, 0.82);
+      border-radius: 14px;
+      background: rgba(45, 22, 10, 0.94);
+      box-shadow: 0 24px 54px rgba(0, 0, 0, 0.5);
+      text-align: center;
+    }
+
+    .finish-panel.is-open {
+      display: block;
+    }
+
+    .finish-panel h1 {
+      margin: 0 0 8px;
+      color: var(--gold);
+      font-size: clamp(30px, 5vw, 52px);
+      line-height: 1.04;
+      text-shadow: 0 3px 8px rgba(0, 0, 0, 0.62);
+    }
+
+    .finish-panel p {
+      margin: 0 0 18px;
+      font-size: clamp(16px, 2vw, 22px);
+    }
+
+    .finish-panel .text-button {
+      min-width: 170px;
+      padding: 12px 18px;
+      border: 2px solid rgba(255, 213, 22, 0.8);
+      border-radius: 999px;
+      background: linear-gradient(180deg, #7b4220, #32170d);
+      color: var(--gold);
+      font-weight: 900;
+      box-shadow: 0 10px 18px rgba(0, 0, 0, 0.38);
+    }
+
+    @media (max-width: 980px) {
+      .food-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .menu-sign {
+        width: clamp(140px, 23vw, 210px);
+      }
+
+      .table-zone {
+        width: 78vw;
+        height: 42vw;
+        transform: translate(-50%, -14%);
+      }
+
+      .progress {
+        max-width: calc(100vw - 24px);
+      }
+
+      :root {
+        --dish-size: clamp(106px, 13.2vw, 141px);
+      }
+
+      .dish-info {
+        top: clamp(82px, 13vh, 118px);
+        right: clamp(14px, 2vw, 24px);
+        left: auto;
+        bottom: auto;
+        width: min(360px, calc(46vw - 24px));
+        max-height: calc(100vh - 120px);
+        transform: none;
+      }
+
+      .detail-dish-stage {
+        left: clamp(24px, 5vw, 44px);
+        top: 50%;
+        width: min(48vw, 468px);
+        height: min(68vh, 494px);
+        transform: translateY(-48%);
+      }
+
+      .dish-info p {
+        max-height: none;
+      }
+
+      @keyframes infoPop {
+        from {
+          opacity: 0;
+          transform: translateY(10px) scale(0.96);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+    }
+
+    @media (max-width: 680px) {
+      .app {
+        min-height: 580px;
+      }
+
+      .logo {
+        width: 94vw;
+      }
+
+      .menu-overlay {
+        padding-top: 76px;
+      }
+
+      .food-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .card-name {
+        font-size: clamp(17px, 5vw, 26px);
+      }
+
+      .top-actions {
+        gap: 8px;
+      }
+
+      .round-button,
+      .menu-close {
+        width: 58px;
+      }
+
+      .menu-sign {
+        top: 72px;
+        width: 124px;
+      }
+
+      .table-zone {
+        width: 96vw;
+        height: 76vw;
+        transform: translate(-50%, -5%);
+      }
+
+      .progress {
+        padding: 8px 10px;
+        gap: 6px;
+        font-size: 13px;
+      }
+
+      .dish-info {
+        top: auto;
+        right: auto;
+        left: 50%;
+        bottom: 58px;
+        width: min(560px, calc(100vw - 28px));
+        max-height: calc(100vh - 110px);
+        padding: 14px 16px;
+        transform: translateX(-50%);
+      }
+
+      .detail-dish-stage {
+        left: 50%;
+        top: 24%;
+        width: min(82vw, 325px);
+        height: min(38vh, 325px);
+        transform: translate(-50%, -50%);
+      }
+
+      .dish-info p {
+        max-height: none;
+      }
+
+      .dish-info h2 {
+        margin-right: 38px;
+      }
+
+      @keyframes infoPop {
+        from {
+          opacity: 0;
+          transform: translate(-50%, 10px) scale(0.96);
+        }
+
+        to {
+          opacity: 1;
+          transform: translate(-50%, 0) scale(1);
+        }
+      }
+
+      :root {
+        --dish-size: clamp(77px, 19.8vw, 95px);
+      }
+
+      .progress-dot {
+        width: 7px;
+        height: 7px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app" id="app">
+    <section class="screen intro is-active" id="introScreen" aria-label="Kırgız Yemekleri giriş ekranı">
+      <div class="intro-content">
+        <img class="logo" src="logo-animation%201-000.png" alt="Kırgız Yemekleri">
+        <button class="start-button" id="startButton" type="button" aria-label="Oyuna başla">
+          <img src="btn_basla-animation%201-000.png" alt="">
+        </button>
+      </div>
+    </section>
+
+    <section class="screen game" id="gameScreen" aria-label="Kırgız yemekleri sofrası">
+      <div class="top-actions" aria-label="Oyun kontrolleri">
+        <button class="round-button" id="homeButton" type="button" aria-label="Ana sayfa">
+          <img src="btn_anasayfa-animation%201-000.png" alt="">
+        </button>
+        <button class="round-button" id="fullscreenButton" type="button" aria-label="Tam ekran">
+          <img src="btn_tamekran-animation%202-000.png" alt="">
+        </button>
+      </div>
+
+      <button class="menu-sign" id="menuButton" type="button" aria-label="Yemek menüsünü aç">
+        <img src="menu-animation%201-000.png" alt="Menü">
+      </button>
+
+      <div class="table-zone" id="tableZone" aria-live="polite" aria-label="Sofraya yerleştirilen yemekler"></div>
+
+      <div class="table-error" id="tableError" role="alert">Sofra dolu!</div>
+
+      <div class="progress" id="progress" aria-label="Sofra ilerlemesi"></div>
+
+      <div class="dish-detail-overlay" id="dishDetailOverlay" aria-hidden="true">
+        <div class="detail-dish-stage">
+          <img id="dishDetailImage" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="">
+        </div>
+      </div>
+
+      <section class="dish-info" id="dishInfo" aria-live="polite" aria-label="Yemek açıklaması">
+        <button class="dish-info-close" id="dishInfoClose" type="button" aria-label="Açıklamayı kapat">×</button>
+        <h2 id="dishInfoTitle"></h2>
+        <p id="dishInfoText"></p>
+        <button class="dish-info-remove" id="dishInfoRemove" type="button">Sofradan Kaldır</button>
+      </section>
+    </section>
+
+    <section class="menu-overlay" id="menuOverlay" aria-label="Yemek menüsü">
+      <button class="menu-close" id="closeMenuButton" type="button" aria-label="Menüyü kapat">
+        <img src="btn_kapat-animation%202-000.png" alt="">
+      </button>
+      <div class="food-grid" id="foodGrid"></div>
+    </section>
+
+    <section class="finish-panel" id="finishPanel" aria-live="polite">
+      <h1>Tebrikler!</h1>
+      <p>Kırgız sofrası hazır.</p>
+      <button class="text-button" id="playAgainButton" type="button">Tekrar Oyna</button>
+    </section>
+
+    <audio id="backgroundMusic" src="sesler/fon.mpeg" loop preload="auto"></audio>
+  </main>
+
+  <script>
+    const foods = [
+      { name: "Beşparmak", index: 0 },
+      { name: "Mantı", index: 1 },
+      { name: "Laghman", index: 2 },
+      { name: "Kuurdak", index: 3 },
+      { name: "Shorpo", index: 4 },
+      { name: "Kımız", index: 5 },
+      { name: "Jarma", index: 6 },
+      { name: "Chuchuk", index: 7 },
+      { name: "Boorsok", index: 8 },
+      { name: "Samsa", index: 9 },
+      { name: "Tash Kordo", index: 10 },
+      { name: "Chak-Chak", index: 11 }
+    ];
+
+    const visualOrder = [0, 3, 6, 9, 1, 4, 7, 10, 2, 5, 8, 11];
+
+    const foodDescriptions = {
+      0: "Bu geleneksel tat özellikle özel günlerde ve kutlamalarda sofralara renk katıyor. Genellikle at eti ile hazırlansa da kuzu eti, dana eti gibi etlerle de yapılabiliyor. Erişte ve soğanın mükemmel uyumuyla hazırlanan beşparmak Kırgız mutfağının kıvanç kaynağı. Büyük bir tepsinin etrafında toplanan aile ve dostlar, lezzetin tadını çıkarırken bir araya gelmektedir. Geleneksel olarak ellerle yenilen bu yemek, paylaşımın ve birlikteliğin simgesi haline gelmiştir.",
+      1: "Kırgız mutfağının başka bir lezzeti olan mantı, ince hamurun içinde kuzu ya da dana eti, soğan ve baharatların çok güzel bir birleşimidir. Genellikle buharda pişiriliyor ve yanında yoğurtla sunuluyor. Mantı, Kırgız sofralarında sıkça rastlanan bir konukseverlik simgesi; ev sahipleri genellikle konuklarını ağırlarken bu nefis yemeği ikram etmeyi adeta bir gelenek haline getirmişlerdir.",
+      2: "Kırgızistan’ın zengin mutfak kültürünün önemli bir parçası olan Laghman, Orta Asya’nın nefis noodle çeşitlerinden biri. Genellikle etli ve sebzeli olarak hazırlanıyor. Laghman, kuzu eti, renkli sebzeler ve baharatların muhteşem bir birleşimi, bu da ona hem göz alıcı bir renk uyumu hem de doyurucu bir lezzet katıyor. Kırgız sofralarında sıklıkla tercih edilen Laghman, Türkistan’ın tarihini ve kültürünü damak tadınızla buluşturmaktadır.",
+      3: "Kuurdak, genellikle kuzu etinden yapılıyor ve et, soğan, patates ve baharatlarla bir araya getirilerek özel bir pişirme tekniğiyle hazırlanıyor. Açık havada ateş üzerinde pişirilen yemek etin lezzetini koruyarak eşsiz bir dokuya sahip oluyor. Kuurdak, sadece bir yemek değil, aynı zamanda Kırgız kültürünün sıcaklığını ve paylaşımını sofralara taşıyan bir başyapıt.",
+      4: "Shorpo, Kırgız mutfağının geleneksel ve lezzetli bir çorba çeşidi. Genellikle kuzu eti ile hazırlanan bu çorba oldukça doyurucu ve besleyici. Shorponun temel malzemeleri arasında et, patates, havuç, soğan ve baharatlar var. Kırgızistan’ın soğuk iklimine uygun olarak, shorpo sıcak servis ediliyor ve genellikle kalabalık sofralarda paylaşılıyor.",
+      5: "Kırgızistan içecekleri denilince akla gelen ilk lezzet şüphesiz kımız. Kımız, Kırgızistan’ın geleneksel içeceklerinden biri. Yerel kültürün önemli bir parçasını temsil eden bu içecek fermente edilmiş at sütünden elde ediliyor. Kırgızistan’ın doğal yaşam tarzının bir yansıması olan kımız, zengin besin değeri ve özgün ekşi tadıyla mutlaka denenmesi gereken bir tat. Kımız konuklara hoşgeldin ifadesi olarak sunulmaktadır. Bu geleneksel içecek, Kırgız Türk kültürünün derin köklerini ve atalarımızın yaşam tarzını yansıtmaktadır.",
+      6: "Jarma, Kırgız mutfağının sevilen ve doyurucu bir yemeği olarak öne çıkıyor. Genellikle un, et (çoğunlukla kuzu veya sığır eti), pirinç, havuç ve soğan gibi malzemelerin birleşiminden oluşan bu yemek, özel günlerde ve kutlamalarda sıkça sofralarda yer alıyor. Jarma, geleneksel bir pişirme yöntemi olan “dampır” tekniğiyle hazırlanıyor. Malzemeler, büyük bir tencere içinde katmanlar halinde dizilip düşük ateşte uzun süre pişiriliyor. Sonuç olarak ortaya çıkan bu lezzetli yemek, kıvamı, aroma zenginliği ve benzersiz tadıyla içi ısıtan bir lezzet sunuyor.",
+      7: "Chuchuk için bir nevi sucuk ya da sosis diyebiliriz. At eti ve sakatatlarla hazırlanan kurutulmuş et gibidir.",
+      8: "Boorsok, özel günlerde, bayramlarda ya da kutlamalarda sıkça tüketilen bir hamur işi. Mayalı hamurun kesilip kızartılmasıyla hazırlanıyor. Boorsok, genellikle küçük kare şeklinde parçalara ayrılıyor ve altın renginde kızarmış bir dış kabuk ile içi yumuşacık oluyor. Bu nefis atıştırmalık, genellikle bal veya kaymak ya da çay veya süt ile de sunuluyor.",
+      9: "Samsa, Kırgızistan’ın geleneksel hamur işlerinden biri. Hem gündelik hayatta hem de özel günlerde sofralarda sık sık tükettikleri bir lezzet. Samsa’nın iç harcı genellikle kıyma, patates oluyor ve baharatlarla zenginleştiriliyor. Hamurunun üzerine yapılan özel desenler, samsaya geleneksel ve güzel bir görünüm kazandırıyor. Yumuşak iç harcı ve gevrek dış kabuğuyla samsa çok güzel yiyeceklerden biridir.",
+      10: "Tash Kordo, özenle hazırlanan kuzu eti ile yapılan bir yemek. Yemeğin adı, “taş” sözcüğünden türetilmiş ve geleneksel olarak taşın içine gömülerek pişirildiği için bu ismi almış. Kuzu eti, genellikle soğan, patates ve baharatlarla harmanlanarak özel bir yöntemle pişiriliyor. Sonuç olarak ortaya çıkan Tash Kordo, lezzetli etin özünü içinde bulundururken, sebzelerin aromalarıyla zenginleşiyor.",
+      11: "Genellikle bayramlarda, düğünlerde ya da özel günlerde sofralarda kendine yer bulan bu tatlı, küçük hamur parçalarının kızartılması ve ardından ballı şeker şurubu ile kaplanmasıyla hazırlanıyor. Chak-Chak, genellikle fındık ya da ceviz gibi kuruyemişlerle süsleniyor."
+    };
+
+    const tableSlots = [
+      { x: "52%", y: "7%" },
+      { x: "32%", y: "14%" },
+      { x: "68%", y: "14%" },
+      { x: "24%", y: "32%" },
+      { x: "76%", y: "32%" },
+      { x: "34%", y: "50%" },
+      { x: "66%", y: "50%" },
+      { x: "52%", y: "58%" }
+    ];
+
+    const introScreen = document.getElementById("introScreen");
+    const gameScreen = document.getElementById("gameScreen");
+    const menuOverlay = document.getElementById("menuOverlay");
+    const tableZone = document.getElementById("tableZone");
+    const foodGrid = document.getElementById("foodGrid");
+    const progress = document.getElementById("progress");
+    const finishPanel = document.getElementById("finishPanel");
+    const tableError = document.getElementById("tableError");
+    const dishInfo = document.getElementById("dishInfo");
+    const dishInfoTitle = document.getElementById("dishInfoTitle");
+    const dishInfoText = document.getElementById("dishInfoText");
+    const dishInfoRemove = document.getElementById("dishInfoRemove");
+    const dishDetailOverlay = document.getElementById("dishDetailOverlay");
+    const dishDetailImage = document.getElementById("dishDetailImage");
+    const backgroundMusic = document.getElementById("backgroundMusic");
+    const emptyImageSrc = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
+
+    const served = new Set();
+    const servedOrder = [];
+    let tableErrorTimer = null;
+    let selectedFoodIndex = null;
+
+    function assetNumber(index) {
+      return String(index).padStart(3, "0");
+    }
+
+    function showScreen(screen) {
+      introScreen.classList.toggle("is-active", screen === "intro");
+      gameScreen.classList.toggle("is-active", screen === "game");
+      menuOverlay.classList.remove("is-open");
+      finishPanel.classList.remove("is-open");
+      hideTableError();
+      hideDishInfo();
+    }
+
+    function renderProgress() {
+      progress.innerHTML = "";
+
+      const label = document.createElement("span");
+      label.textContent = `${served.size}/${foods.length}`;
+      progress.append(label);
+
+      foods.forEach((food) => {
+        const dot = document.createElement("span");
+        dot.className = "progress-dot";
+        if (served.has(food.index)) {
+          dot.classList.add("is-filled");
+        }
+        progress.append(dot);
+      });
+    }
+
+    function renderMenu() {
+      foodGrid.innerHTML = "";
+
+      visualOrder.forEach((foodIndex) => {
+        const food = foods[foodIndex];
+        const button = document.createElement("button");
+        button.className = "food-card";
+        button.type = "button";
+        button.dataset.index = food.index;
+        button.setAttribute("aria-label", `${food.name} seç`);
+        button.style.aspectRatio = "430 / 260";
+
+        if (served.has(food.index)) {
+          button.classList.add("is-served");
+          button.disabled = true;
+          button.setAttribute("aria-label", `${food.name} sofraya serildi`);
+        }
+
+        button.innerHTML = `
+          <img class="card-frame" src="menu_kart-animation%201-000.png" alt="">
+          <img class="card-photo" src="menu/yemek_resim-animation%201-${assetNumber(food.index)}.png" alt="">
+          <span class="done-ribbon">Sofrada</span>
+          <span class="card-name">${food.name}</span>
+        `;
+
+        button.addEventListener("click", () => serveFood(food.index));
+        foodGrid.append(button);
+      });
+    }
+
+    function renderTable() {
+      tableZone.innerHTML = "";
+
+      servedOrder.forEach((foodIndex, slotIndex) => {
+        const food = foods.find((item) => item.index === foodIndex);
+        const slot = tableSlots[slotIndex];
+        const dish = document.createElement("button");
+        dish.className = "served-dish";
+        dish.type = "button";
+        dish.style.setProperty("--x", slot.x);
+        dish.style.setProperty("--y", slot.y);
+        dish.style.zIndex = String(100 + Math.round(parseFloat(slot.y)));
+        dish.setAttribute("aria-label", `${food.name} açıklamasını göster`);
+        dish.innerHTML = `<img src="sofra/sofra_yemek-animation%201-${assetNumber(food.index)}.png" alt="${food.name}">`;
+        dish.addEventListener("click", () => showDishInfo(food));
+        tableZone.append(dish);
+      });
+    }
+
+    function serveFood(foodIndex) {
+      if (served.has(foodIndex)) {
+        return;
+      }
+
+      if (served.size >= tableSlots.length) {
+        menuOverlay.classList.remove("is-open");
+        showTableFullError();
+        return;
+      }
+
+      served.add(foodIndex);
+      servedOrder.push(foodIndex);
+      renderTable();
+      renderProgress();
+      renderMenu();
+      menuOverlay.classList.remove("is-open");
+
+      if (served.size === foods.length) {
+        window.setTimeout(() => {
+          finishPanel.classList.add("is-open");
+        }, 520);
+      }
+    }
+
+    function showTableFullError() {
+      tableError.classList.add("is-visible");
+      window.clearTimeout(tableErrorTimer);
+      tableErrorTimer = window.setTimeout(hideTableError, 1800);
+    }
+
+    function hideTableError() {
+      tableError.classList.remove("is-visible");
+      window.clearTimeout(tableErrorTimer);
+      tableErrorTimer = null;
+    }
+
+    function showDishInfo(food) {
+      selectedFoodIndex = food.index;
+      dishInfoTitle.textContent = food.name;
+      dishInfoText.textContent = foodDescriptions[food.index] || "Bu yemek için açıklama bulunamadı.";
+      dishDetailImage.src = `sofra/sofra_yemek-animation%201-${assetNumber(food.index)}.png`;
+      dishDetailImage.alt = food.name;
+      dishDetailOverlay.classList.add("is-open");
+      dishDetailOverlay.setAttribute("aria-hidden", "false");
+      dishInfo.classList.add("is-open");
+    }
+
+    function hideDishInfo() {
+      dishInfo.classList.remove("is-open");
+      dishDetailOverlay.classList.remove("is-open");
+      dishDetailOverlay.setAttribute("aria-hidden", "true");
+      dishDetailImage.src = emptyImageSrc;
+      dishDetailImage.alt = "";
+      selectedFoodIndex = null;
+    }
+
+    function removeSelectedFood() {
+      if (selectedFoodIndex === null) {
+        return;
+      }
+
+      served.delete(selectedFoodIndex);
+      const orderIndex = servedOrder.indexOf(selectedFoodIndex);
+      if (orderIndex !== -1) {
+        servedOrder.splice(orderIndex, 1);
+      }
+
+      renderTable();
+      renderProgress();
+      renderMenu();
+      finishPanel.classList.remove("is-open");
+      hideDishInfo();
+    }
+
+    function resetGame() {
+      served.clear();
+      servedOrder.length = 0;
+      renderTable();
+      renderProgress();
+      renderMenu();
+      finishPanel.classList.remove("is-open");
+      hideTableError();
+      hideDishInfo();
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen?.();
+      } else {
+        document.exitFullscreen?.();
+      }
+    }
+
+    function playBackgroundMusic() {
+      backgroundMusic.volume = 0.6;
+      backgroundMusic.play().catch(() => {});
+    }
+
+    document.getElementById("startButton").addEventListener("click", () => {
+      playBackgroundMusic();
+      resetGame();
+      showScreen("game");
+    });
+
+    document.getElementById("homeButton").addEventListener("click", () => {
+      resetGame();
+      showScreen("intro");
+    });
+
+    document.getElementById("fullscreenButton").addEventListener("click", toggleFullscreen);
+    document.getElementById("menuButton").addEventListener("click", () => {
+      menuOverlay.classList.add("is-open");
+    });
+    document.getElementById("closeMenuButton").addEventListener("click", () => {
+      menuOverlay.classList.remove("is-open");
+    });
+    document.getElementById("playAgainButton").addEventListener("click", () => {
+      resetGame();
+      menuOverlay.classList.add("is-open");
+    });
+    document.getElementById("dishInfoClose").addEventListener("click", hideDishInfo);
+    dishInfoRemove.addEventListener("click", removeSelectedFood);
+    dishDetailOverlay.addEventListener("click", hideDishInfo);
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && menuOverlay.classList.contains("is-open")) {
+        menuOverlay.classList.remove("is-open");
+      } else if (event.key === "Escape" && dishInfo.classList.contains("is-open")) {
+        hideDishInfo();
+      }
+    });
+
+    renderProgress();
+    renderMenu();
+  </script>
+</body>
+</html>
+
