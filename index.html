@@ -155,6 +155,55 @@
       z-index: 3;
     }
 
+    .game-instruction {
+      position: absolute;
+      top: clamp(22px, 4vh, 46px);
+      left: 50%;
+      z-index: 6;
+      width: min(900px, calc(100vw - 320px));
+      min-width: 420px;
+      padding: 10px 18px 12px;
+      transform: translateX(-50%);
+      border: 2px solid rgba(255, 213, 22, 0.62);
+      border-radius: 10px;
+      background: rgba(36, 17, 9, 0.68);
+      color: #fff2c8;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(17px, 1.35vw, 23px);
+      font-weight: 700;
+      line-height: 1.32;
+      text-align: center;
+      text-shadow: 0 3px 6px rgba(0, 0, 0, 0.78);
+      box-shadow: 0 16px 30px rgba(0, 0, 0, 0.34);
+      pointer-events: none;
+      opacity: 0;
+    }
+
+    .game-instruction span {
+      display: block;
+    }
+
+    .game.is-active .game-instruction {
+      animation: instructionIn 520ms ease-out 460ms both;
+    }
+
+    .game.has-detail .game-instruction {
+      opacity: 0;
+      animation: none;
+    }
+
+    @keyframes instructionIn {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -12px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+    }
+
     .top-actions {
       position: absolute;
       top: clamp(10px, 1.8vw, 22px);
@@ -325,21 +374,23 @@
       inset: 0;
       z-index: 16;
       display: none;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(38px, 4.4vw, 76px);
+      padding: clamp(34px, 4vw, 70px);
       background: rgba(0, 0, 0, 0.62);
       backdrop-filter: blur(2px);
     }
 
     .dish-detail-overlay.is-open {
-      display: block;
+      display: flex;
     }
 
     .detail-dish-stage {
-      position: absolute;
-      left: clamp(96px, 11vw, 170px);
-      top: 50%;
-      width: min(50vw, 676px);
-      height: min(88vh, 676px);
-      transform: translateY(-48%);
+      position: relative;
+      flex: 0 0 min(50.4vw, 624px, calc(100vh - 96px));
+      width: min(50.4vw, 624px, calc(100vh - 96px));
+      aspect-ratio: 1;
       display: grid;
       place-items: center;
       pointer-events: none;
@@ -347,8 +398,8 @@
 
     .detail-dish-stage img {
       display: block;
-      max-width: 100%;
-      max-height: 100%;
+      width: 100%;
+      height: 100%;
       object-fit: contain;
       filter: drop-shadow(0 28px 22px rgba(0, 0, 0, 0.46));
       animation: dishZoomIn 260ms cubic-bezier(.18, .9, .24, 1.08) both;
@@ -367,12 +418,11 @@
     }
 
     .dish-info {
-      position: absolute;
-      top: clamp(78px, 14vh, 118px);
-      right: clamp(14px, 2vw, 30px);
+      position: relative;
       z-index: 18;
       display: none;
-      width: min(420px, calc(100vw - 32px));
+      flex: 0 0 min(420px, 32vw);
+      width: min(420px, 32vw);
       max-height: calc(100vh - 96px);
       overflow: hidden;
       padding: 18px 20px 18px;
@@ -637,22 +687,27 @@
         --dish-size: clamp(106px, 13.2vw, 141px);
       }
 
+      .game-instruction {
+        top: clamp(16px, 3vh, 28px);
+        width: min(620px, calc(100vw - 200px));
+        min-width: 360px;
+        font-size: clamp(16px, 2vw, 20px);
+      }
+
+      .dish-detail-overlay {
+        gap: clamp(30px, 5vw, 48px);
+        padding: 28px 18px;
+      }
+
       .dish-info {
-        top: clamp(82px, 13vh, 118px);
-        right: clamp(14px, 2vw, 24px);
-        left: auto;
-        bottom: auto;
-        width: min(360px, calc(46vw - 24px));
+        flex-basis: min(360px, 40vw);
+        width: min(360px, 40vw);
         max-height: calc(100vh - 120px);
-        transform: none;
       }
 
       .detail-dish-stage {
-        left: clamp(24px, 5vw, 44px);
-        top: 50%;
-        width: min(48vw, 468px);
-        height: min(68vh, 494px);
-        transform: translateY(-48%);
+        flex-basis: min(43vw, 432px, calc(100vh - 96px));
+        width: min(43vw, 432px, calc(100vh - 96px));
       }
 
       .dish-info p {
@@ -720,23 +775,31 @@
         font-size: 13px;
       }
 
+      .game-instruction {
+        top: 14px;
+        width: min(320px, calc(100vw - 98px));
+        min-width: 0;
+        padding: 8px 10px 9px;
+        font-size: clamp(13px, 3.2vw, 16px);
+        border-radius: 8px;
+      }
+
+      .dish-detail-overlay {
+        flex-direction: column;
+        gap: 18px;
+        padding: 28px 14px 54px;
+      }
+
       .dish-info {
-        top: auto;
-        right: auto;
-        left: 50%;
-        bottom: 58px;
+        flex-basis: auto;
         width: min(560px, calc(100vw - 28px));
-        max-height: calc(100vh - 110px);
+        max-height: calc(52vh, 420px);
         padding: 14px 16px;
-        transform: translateX(-50%);
       }
 
       .detail-dish-stage {
-        left: 50%;
-        top: 24%;
-        width: min(82vw, 325px);
-        height: min(38vh, 325px);
-        transform: translate(-50%, -50%);
+        flex-basis: min(88vw, 360px, 42vh);
+        width: min(88vw, 360px, 42vh);
       }
 
       .dish-info p {
@@ -750,12 +813,12 @@
       @keyframes infoPop {
         from {
           opacity: 0;
-          transform: translate(-50%, 10px) scale(0.96);
+          transform: translateY(10px) scale(0.96);
         }
 
         to {
           opacity: 1;
-          transform: translate(-50%, 0) scale(1);
+          transform: translateY(0) scale(1);
         }
       }
 
@@ -795,6 +858,11 @@
         <img src="menu-animation%201-000.png" alt="Menü">
       </button>
 
+      <div class="game-instruction" aria-hidden="true">
+        <span>Menüye tıklayarak yemek seçimi yapabilirsiniz.</span>
+        <span>Masadaki yemeği seçip detaylarını görebilir ya da sofradan kaldırabilirsiniz.</span>
+      </div>
+
       <div class="table-zone" id="tableZone" aria-live="polite" aria-label="Sofraya yerleştirilen yemekler"></div>
 
       <div class="table-error" id="tableError" role="alert">Sofra dolu!</div>
@@ -805,14 +873,14 @@
         <div class="detail-dish-stage">
           <img id="dishDetailImage" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="">
         </div>
-      </div>
 
-      <section class="dish-info" id="dishInfo" aria-live="polite" aria-label="Yemek açıklaması">
-        <button class="dish-info-close" id="dishInfoClose" type="button" aria-label="Açıklamayı kapat">×</button>
-        <h2 id="dishInfoTitle"></h2>
-        <p id="dishInfoText"></p>
-        <button class="dish-info-remove" id="dishInfoRemove" type="button">Sofradan Kaldır</button>
-      </section>
+        <section class="dish-info" id="dishInfo" aria-live="polite" aria-label="Yemek açıklaması">
+          <button class="dish-info-close" id="dishInfoClose" type="button" aria-label="Açıklamayı kapat">×</button>
+          <h2 id="dishInfoTitle"></h2>
+          <p id="dishInfoText"></p>
+          <button class="dish-info-remove" id="dishInfoRemove" type="button">Sofradan Kaldır</button>
+        </section>
+      </div>
     </section>
 
     <section class="menu-overlay" id="menuOverlay" aria-label="Yemek menüsü">
@@ -829,6 +897,7 @@
     </section>
 
     <audio id="backgroundMusic" src="sesler/fon.mpeg" loop preload="auto"></audio>
+    <audio id="instructionAudio" src="sesler/yonerge.mp3" preload="auto"></audio>
   </main>
 
   <script>
@@ -890,6 +959,7 @@
     const dishDetailOverlay = document.getElementById("dishDetailOverlay");
     const dishDetailImage = document.getElementById("dishDetailImage");
     const backgroundMusic = document.getElementById("backgroundMusic");
+    const instructionAudio = document.getElementById("instructionAudio");
     const emptyImageSrc = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
 
     const served = new Set();
@@ -1019,6 +1089,7 @@
       dishInfoText.textContent = foodDescriptions[food.index] || "Bu yemek için açıklama bulunamadı.";
       dishDetailImage.src = `sofra/sofra_yemek-animation%201-${assetNumber(food.index)}.png`;
       dishDetailImage.alt = food.name;
+      gameScreen.classList.add("has-detail");
       dishDetailOverlay.classList.add("is-open");
       dishDetailOverlay.setAttribute("aria-hidden", "false");
       dishInfo.classList.add("is-open");
@@ -1026,6 +1097,7 @@
 
     function hideDishInfo() {
       dishInfo.classList.remove("is-open");
+      gameScreen.classList.remove("has-detail");
       dishDetailOverlay.classList.remove("is-open");
       dishDetailOverlay.setAttribute("aria-hidden", "true");
       dishDetailImage.src = emptyImageSrc;
@@ -1071,14 +1143,21 @@
     }
 
     function playBackgroundMusic() {
-      backgroundMusic.volume = 0.6;
+      backgroundMusic.volume = 0.5;
       backgroundMusic.play().catch(() => {});
     }
 
+    function playInstructionAudio() {
+      instructionAudio.currentTime = 0;
+      instructionAudio.volume = 1;
+      instructionAudio.play().catch(() => {});
+    }
+
     document.getElementById("startButton").addEventListener("click", () => {
-      playBackgroundMusic();
       resetGame();
       showScreen("game");
+      playBackgroundMusic();
+      playInstructionAudio();
     });
 
     document.getElementById("homeButton").addEventListener("click", () => {
@@ -1098,6 +1177,7 @@
       menuOverlay.classList.add("is-open");
     });
     document.getElementById("dishInfoClose").addEventListener("click", hideDishInfo);
+    dishInfo.addEventListener("click", (event) => event.stopPropagation());
     dishInfoRemove.addEventListener("click", removeSelectedFood);
     dishDetailOverlay.addEventListener("click", hideDishInfo);
 
