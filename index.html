@@ -859,8 +859,7 @@
       </button>
 
       <div class="game-instruction" aria-hidden="true">
-        <span>Menüye tıklayarak yemek seçimi yapabilirsiniz.</span>
-        <span>Masadaki yemeği seçip detaylarını görebilir ya da sofradan kaldırabilirsiniz.</span>
+        <span>Menüye tıklayarak yemek seçimi yapabilir, seçtiğiniz yemeğe tıklayarak, yemeğin detaylarına ulaşabilirsiniz ya da masadan kaldırabilirsiniz.</span>
       </div>
 
       <div class="table-zone" id="tableZone" aria-live="polite" aria-label="Sofraya yerleştirilen yemekler"></div>
@@ -960,6 +959,7 @@
     const dishDetailImage = document.getElementById("dishDetailImage");
     const backgroundMusic = document.getElementById("backgroundMusic");
     const instructionAudio = document.getElementById("instructionAudio");
+    const foodDetailAudio = new Audio();
     const emptyImageSrc = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
 
     const served = new Set();
@@ -1093,6 +1093,7 @@
       dishDetailOverlay.classList.add("is-open");
       dishDetailOverlay.setAttribute("aria-hidden", "false");
       dishInfo.classList.add("is-open");
+      playFoodDetailAudio(food.index);
     }
 
     function hideDishInfo() {
@@ -1102,6 +1103,8 @@
       dishDetailOverlay.setAttribute("aria-hidden", "true");
       dishDetailImage.src = emptyImageSrc;
       dishDetailImage.alt = "";
+      foodDetailAudio.pause();
+      foodDetailAudio.currentTime = 0;
       selectedFoodIndex = null;
     }
 
@@ -1151,6 +1154,15 @@
       instructionAudio.currentTime = 0;
       instructionAudio.volume = 1;
       instructionAudio.play().catch(() => {});
+    }
+
+    function playFoodDetailAudio(foodIndex) {
+      instructionAudio.pause();
+      foodDetailAudio.pause();
+      foodDetailAudio.currentTime = 0;
+      foodDetailAudio.src = `sesler/ses${foodIndex}.mp3`;
+      foodDetailAudio.volume = 1;
+      foodDetailAudio.play().catch(() => {});
     }
 
     document.getElementById("startButton").addEventListener("click", () => {
