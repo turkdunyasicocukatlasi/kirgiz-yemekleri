@@ -579,7 +579,7 @@
       top: 9%;
       width: 84%;
       height: 56%;
-      object-fit: cover;
+      object-fit: contain;
       z-index: 2;
       border-radius: 6px;
     }
@@ -967,8 +967,16 @@
     let tableErrorTimer = null;
     let selectedFoodIndex = null;
 
-    function assetNumber(index) {
-      return String(index).padStart(3, "0");
+    const frontTableSlots = new Set([4, 5, 6, 7]);
+
+    function foodImageSrc(index, view) {
+      const foodNumber = index + 1;
+      const fileView = foodNumber === 4 && view === "önde" ? "önden" : view;
+      return encodeURI(`yemek/${foodNumber}.yemek ${fileView}.png`);
+    }
+
+    function tableDishView(slotIndex) {
+      return frontTableSlots.has(slotIndex) ? "önde" : "karşı";
     }
 
     function showScreen(screen) {
@@ -1017,7 +1025,7 @@
 
         button.innerHTML = `
           <img class="card-frame" src="menu_kart-animation%201-000.png" alt="">
-          <img class="card-photo" src="menu/yemek_resim-animation%201-${assetNumber(food.index)}.png" alt="">
+          <img class="card-photo" src="${foodImageSrc(food.index, "üstten")}" alt="">
           <span class="done-ribbon">Sofrada</span>
           <span class="card-name">${food.name}</span>
         `;
@@ -1040,7 +1048,7 @@
         dish.style.setProperty("--y", slot.y);
         dish.style.zIndex = String(100 + Math.round(parseFloat(slot.y)));
         dish.setAttribute("aria-label", `${food.name} açıklamasını göster`);
-        dish.innerHTML = `<img src="sofra/sofra_yemek-animation%201-${assetNumber(food.index)}.png" alt="${food.name}">`;
+        dish.innerHTML = `<img src="${foodImageSrc(food.index, tableDishView(slotIndex))}" alt="${food.name}">`;
         dish.addEventListener("click", () => showDishInfo(food));
         tableZone.append(dish);
       });
@@ -1087,7 +1095,7 @@
       selectedFoodIndex = food.index;
       dishInfoTitle.textContent = food.name;
       dishInfoText.textContent = foodDescriptions[food.index] || "Bu yemek için açıklama bulunamadı.";
-      dishDetailImage.src = `sofra/sofra_yemek-animation%201-${assetNumber(food.index)}.png`;
+      dishDetailImage.src = foodImageSrc(food.index, "üstten");
       dishDetailImage.alt = food.name;
       gameScreen.classList.add("has-detail");
       dishDetailOverlay.classList.add("is-open");
