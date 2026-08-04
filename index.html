@@ -113,6 +113,17 @@
       pointer-events: none;
     }
 
+    .video-intro.is-ready .video-shade {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: none;
+    }
+
+    .video-intro.is-ready .video-play-button,
+    .video-intro.is-ready .skip-intro-button {
+      display: none;
+    }
+
     .video-play-button {
       width: clamp(118px, 16vw, 190px);
       aspect-ratio: 1;
@@ -151,21 +162,20 @@
     }
 
     .intro {
+      z-index: 4;
       text-align: center;
+      pointer-events: none;
     }
 
     .intro.is-active {
       display: flex;
       justify-content: center;
       align-items: flex-start;
+      pointer-events: auto;
     }
 
     .intro::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: rgba(240, 240, 230, 0.48);
-      z-index: -1;
+      content: none;
     }
 
     .intro-content {
@@ -1088,7 +1098,8 @@
     }
 
     function showScreen(screen) {
-      videoIntroScreen.classList.toggle("is-active", screen === "video");
+      videoIntroScreen.classList.toggle("is-active", screen === "video" || screen === "intro");
+      videoIntroScreen.classList.toggle("is-ready", screen === "intro");
       introScreen.classList.toggle("is-active", screen === "intro");
       gameScreen.classList.toggle("is-active", screen === "game");
       menuOverlay.classList.remove("is-open");
@@ -1099,6 +1110,10 @@
       if (screen !== "video") {
         introVideo.pause();
         videoIntroScreen.classList.remove("is-playing");
+      }
+
+      if (screen === "game") {
+        videoIntroScreen.classList.remove("is-ready");
       }
     }
 
@@ -1296,7 +1311,6 @@
 
     function finishVideoIntro() {
       introVideo.pause();
-      introVideo.currentTime = 0;
       videoIntroScreen.classList.remove("is-playing");
       playIntroBackgroundMusic();
       showScreen("intro");
