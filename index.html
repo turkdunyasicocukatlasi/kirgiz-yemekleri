@@ -126,6 +126,30 @@
       filter: brightness(1.08);
     }
 
+    .skip-intro-button {
+      position: absolute;
+      right: clamp(16px, 3vw, 42px);
+      bottom: clamp(16px, 3vw, 34px);
+      z-index: 2;
+      min-width: 142px;
+      padding: 12px 18px 13px;
+      border: 2px solid rgba(255, 213, 22, 0.74);
+      border-radius: 8px;
+      background: rgba(31, 16, 11, 0.76);
+      color: #fff4d8;
+      font-weight: 800;
+      font-size: clamp(15px, 1.35vw, 20px);
+      line-height: 1;
+      text-shadow: 0 2px 5px rgba(0, 0, 0, 0.76);
+      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.36);
+      transition: transform 160ms ease, filter 160ms ease;
+    }
+
+    .skip-intro-button:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.08);
+    }
+
     .intro {
       text-align: center;
     }
@@ -786,6 +810,14 @@
         width: 94vw;
       }
 
+      .skip-intro-button {
+        right: 14px;
+        bottom: 14px;
+        min-width: 118px;
+        padding: 10px 12px 11px;
+        font-size: 14px;
+      }
+
       .menu-overlay {
         padding-top: 76px;
       }
@@ -892,6 +924,7 @@
           <img src="btn_basla-animation%201-000.png" alt="">
         </button>
       </div>
+      <button class="skip-intro-button" id="skipIntroButton" type="button">Tanıtımı Geç</button>
     </section>
 
     <section class="screen intro" id="introScreen" aria-label="Kırgız Yemekleri giriş ekranı">
@@ -1239,6 +1272,11 @@
       backgroundMusic.play().catch(() => {});
     }
 
+    function playIntroBackgroundMusic() {
+      backgroundMusic.volume = 0.24;
+      backgroundMusic.play().catch(() => {});
+    }
+
     function playInstructionAudio() {
       instructionAudio.currentTime = 0;
       instructionAudio.volume = 1;
@@ -1260,16 +1298,22 @@
       introVideo.pause();
       introVideo.currentTime = 0;
       videoIntroScreen.classList.remove("is-playing");
+      playIntroBackgroundMusic();
       showScreen("intro");
     }
 
     document.getElementById("videoPlayButton").addEventListener("click", () => {
       introVideo.currentTime = 0;
+      introVideo.muted = false;
+      introVideo.volume = 1;
       videoIntroScreen.classList.add("is-playing");
+      playIntroBackgroundMusic();
       introVideo.play().catch(() => {
         videoIntroScreen.classList.remove("is-playing");
       });
     });
+
+    document.getElementById("skipIntroButton").addEventListener("click", finishVideoIntro);
 
     introVideo.addEventListener("ended", finishVideoIntro);
     introVideo.addEventListener("error", finishVideoIntro);
