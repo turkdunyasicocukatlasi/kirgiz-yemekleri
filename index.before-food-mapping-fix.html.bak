@@ -77,55 +77,6 @@
       display: block;
     }
 
-    .video-intro {
-      background: #050403;
-    }
-
-    .video-intro.is-active {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .intro-video {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      background: #050403;
-    }
-
-    .video-shade {
-      position: absolute;
-      inset: 0;
-      z-index: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(0, 0, 0, 0.46);
-      transition: opacity 260ms ease, visibility 260ms ease;
-    }
-
-    .video-intro.is-playing .video-shade {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-    }
-
-    .video-play-button {
-      width: clamp(118px, 16vw, 190px);
-      aspect-ratio: 1;
-      animation: startPulse 1.35s ease-in-out infinite;
-      transition: transform 160ms ease, filter 160ms ease;
-    }
-
-    .video-play-button:hover {
-      animation-play-state: paused;
-      transform: translateY(-2px) scale(1.08);
-      filter: brightness(1.08);
-    }
-
     .intro {
       text-align: center;
     }
@@ -191,7 +142,6 @@
       }
     }
 
-    .video-play-button img,
     .start-button img,
     .round-button img,
     .menu-sign img {
@@ -885,16 +835,7 @@
 </head>
 <body>
   <main class="app" id="app">
-    <section class="screen video-intro is-active" id="videoIntroScreen" aria-label="Kırgız Yemekleri tanıtım videosu">
-      <video class="intro-video" id="introVideo" src="intro.mp4" preload="metadata" playsinline></video>
-      <div class="video-shade">
-        <button class="video-play-button" id="videoPlayButton" type="button" aria-label="Tanıtım videosunu oynat">
-          <img src="btn_basla-animation%201-000.png" alt="">
-        </button>
-      </div>
-    </section>
-
-    <section class="screen intro" id="introScreen" aria-label="Kırgız Yemekleri giriş ekranı">
+    <section class="screen intro is-active" id="introScreen" aria-label="Kırgız Yemekleri giriş ekranı">
       <div class="intro-content">
         <img class="logo" src="logo-animation%201-000.png" alt="Kırgız Yemekleri">
         <button class="start-button" id="startButton" type="button" aria-label="Oyuna başla">
@@ -960,23 +901,23 @@
 
   <script>
     const foods = [
-      { name: "Laghman", index: 0, audio: "laghman.mp3", images: { "karşı": "1.laghman karşı.png", "önde": "1.laghman  önde.png", "üstten": "1.laghman  üstten.png" } },
-      { name: "Beşparmak", index: 1, audio: "beşparmak.mp3", images: { "karşı": "2beşparmak  karşı.png", "önde": "2.beşparmak önde.png", "üstten": "2.beşparmak üstten.png" } },
-      { name: "Samsa", index: 2, audio: "samsa.mp3", images: { "karşı": "3.samsa karşı.png", "önde": "3.samsa önde.png", "üstten": "3.samsa üstten.png" } },
-      { name: "Boorsok", index: 3, audio: "boorsok.mp3", images: { "karşı": "4.boorsak karşı.png", "önde": "4.boorsak önden.png", "üstten": "4.boorsak  üstten.png" } },
-      { name: "Chak-Chak", index: 4, audio: "chak-chak.mp3", images: { "karşı": "5.chak chak karşı.png", "önde": "5.chak chak önde.png", "üstten": "5.chak chak üstten.png" } },
-      { name: "Kımız", index: 5, audio: "kımız.mp3", images: { "karşı": "6.kımız karşı.png", "önde": "6.kımız  önde.png", "üstten": "6.kımız  üstten.png" } },
-      { name: "Mantı", index: 6, audio: "mantı.mp3", images: { "karşı": "7.mantı karşı.png", "önde": "7.mant önde.png", "üstten": "7.mant üstten.png" } },
-      { name: "Jarma", index: 7, audio: "jarma.mp3", images: { "karşı": "8.jarma karşı.png", "önde": "8.jarmaönde.png", "üstten": "8.jarma üstten.png" } },
-      { name: "Shorpo", index: 8, audio: "shorpo.mp3", images: { "karşı": "9.shorpo karşı.png", "önde": "9.shorpo önde.png", "üstten": "9.shorpoüstten.png" } },
-      { name: "Kuurdak", index: 9, audio: "kuurdak.mp3", images: { "karşı": "10.kuurdak karşı.png", "önde": "10.kuurdak önde.png", "üstten": "10.kuurdak üstten.png" } },
-      { name: "Tash Kordo", index: 10, audio: "tash kordo.mp3", images: { "karşı": "11.tash kordo karşı.png", "önde": "11.tash kordo önde.png", "üstten": "11.tash kordo üstten.png" } },
-      { name: "Chuchuk", index: 11, audio: "chuchuk.mp3", images: { "karşı": "12chuck chuk karşı.png", "önde": "12chuck chuk önde.png", "üstten": "12chuck chuküstten.png" } }
+      { name: "Beşparmak", index: 0 },
+      { name: "Mantı", index: 1 },
+      { name: "Laghman", index: 2 },
+      { name: "Kuurdak", index: 3 },
+      { name: "Shorpo", index: 4 },
+      { name: "Kımız", index: 5 },
+      { name: "Jarma", index: 6 },
+      { name: "Chuchuk", index: 7 },
+      { name: "Boorsok", index: 8 },
+      { name: "Samsa", index: 9 },
+      { name: "Tash Kordo", index: 10 },
+      { name: "Chak-Chak", index: 11 }
     ];
 
     const visualOrder = [0, 3, 6, 9, 1, 4, 7, 10, 2, 5, 8, 11];
 
-    const legacyFoodDescriptions = {
+    const foodDescriptions = {
       0: "Bu geleneksel tat özellikle özel günlerde ve kutlamalarda sofralara renk katıyor. Genellikle at eti ile hazırlansa da kuzu eti, dana eti gibi etlerle de yapılabiliyor. Erişte ve soğanın mükemmel uyumuyla hazırlanan beşparmak Kırgız mutfağının kıvanç kaynağı. Büyük bir tepsinin etrafında toplanan aile ve dostlar, lezzetin tadını çıkarırken bir araya gelmektedir. Geleneksel olarak ellerle yenilen bu yemek, paylaşımın ve birlikteliğin simgesi haline gelmiştir.",
       1: "Kırgız mutfağının başka bir lezzeti olan mantı, ince hamurun içinde kuzu ya da dana eti, soğan ve baharatların çok güzel bir birleşimidir. Genellikle buharda pişiriliyor ve yanında yoğurtla sunuluyor. Mantı, Kırgız sofralarında sıkça rastlanan bir konukseverlik simgesi; ev sahipleri genellikle konuklarını ağırlarken bu nefis yemeği ikram etmeyi adeta bir gelenek haline getirmişlerdir.",
       2: "Kırgızistan’ın zengin mutfak kültürünün önemli bir parçası olan Laghman, Orta Asya’nın nefis noodle çeşitlerinden biri. Genellikle etli ve sebzeli olarak hazırlanıyor. Laghman, kuzu eti, renkli sebzeler ve baharatların muhteşem bir birleşimi, bu da ona hem göz alıcı bir renk uyumu hem de doyurucu bir lezzet katıyor. Kırgız sofralarında sıklıkla tercih edilen Laghman, Türkistan’ın tarihini ve kültürünü damak tadınızla buluşturmaktadır.",
@@ -991,21 +932,6 @@
       11: "Genellikle bayramlarda, düğünlerde ya da özel günlerde sofralarda kendine yer bulan bu tatlı, küçük hamur parçalarının kızartılması ve ardından ballı şeker şurubu ile kaplanmasıyla hazırlanıyor. Chak-Chak, genellikle fındık ya da ceviz gibi kuruyemişlerle süsleniyor."
     };
 
-    const foodDescriptions = {
-      0: legacyFoodDescriptions[2],
-      1: legacyFoodDescriptions[0],
-      2: legacyFoodDescriptions[9],
-      3: legacyFoodDescriptions[8],
-      4: legacyFoodDescriptions[11],
-      5: legacyFoodDescriptions[5],
-      6: legacyFoodDescriptions[1],
-      7: legacyFoodDescriptions[6],
-      8: legacyFoodDescriptions[4],
-      9: legacyFoodDescriptions[3],
-      10: legacyFoodDescriptions[10],
-      11: legacyFoodDescriptions[7]
-    };
-
     const tableSlots = [
       { x: "52%", y: "7%" },
       { x: "32%", y: "14%" },
@@ -1017,7 +943,6 @@
       { x: "52%", y: "58%" }
     ];
 
-    const videoIntroScreen = document.getElementById("videoIntroScreen");
     const introScreen = document.getElementById("introScreen");
     const gameScreen = document.getElementById("gameScreen");
     const menuOverlay = document.getElementById("menuOverlay");
@@ -1032,7 +957,6 @@
     const dishInfoRemove = document.getElementById("dishInfoRemove");
     const dishDetailOverlay = document.getElementById("dishDetailOverlay");
     const dishDetailImage = document.getElementById("dishDetailImage");
-    const introVideo = document.getElementById("introVideo");
     const backgroundMusic = document.getElementById("backgroundMusic");
     const instructionAudio = document.getElementById("instructionAudio");
     const foodDetailAudio = new Audio();
@@ -1046,8 +970,9 @@
     const frontTableSlots = new Set([3, 4, 5, 6, 7]);
 
     function foodImageSrc(index, view) {
-      const food = foods.find((item) => item.index === index);
-      return food ? encodeURI(`yemek/${food.images[view]}`) : emptyImageSrc;
+      const foodNumber = index + 1;
+      const fileView = foodNumber === 4 && view === "önde" ? "önden" : view;
+      return encodeURI(`yemek/${foodNumber}.yemek ${fileView}.png`);
     }
 
     function tableDishView(slotIndex) {
@@ -1055,18 +980,12 @@
     }
 
     function showScreen(screen) {
-      videoIntroScreen.classList.toggle("is-active", screen === "video");
       introScreen.classList.toggle("is-active", screen === "intro");
       gameScreen.classList.toggle("is-active", screen === "game");
       menuOverlay.classList.remove("is-open");
       finishPanel.classList.remove("is-open");
       hideTableError();
       hideDishInfo();
-
-      if (screen !== "video") {
-        introVideo.pause();
-        videoIntroScreen.classList.remove("is-playing");
-      }
     }
 
     function renderProgress() {
@@ -1249,30 +1168,10 @@
       instructionAudio.pause();
       foodDetailAudio.pause();
       foodDetailAudio.currentTime = 0;
-      const food = foods.find((item) => item.index === foodIndex);
-      if (!food) return;
-      foodDetailAudio.src = encodeURI(`sesler/${food.audio}`);
+      foodDetailAudio.src = `sesler/ses${foodIndex}.mp3`;
       foodDetailAudio.volume = 1;
       foodDetailAudio.play().catch(() => {});
     }
-
-    function finishVideoIntro() {
-      introVideo.pause();
-      introVideo.currentTime = 0;
-      videoIntroScreen.classList.remove("is-playing");
-      showScreen("intro");
-    }
-
-    document.getElementById("videoPlayButton").addEventListener("click", () => {
-      introVideo.currentTime = 0;
-      videoIntroScreen.classList.add("is-playing");
-      introVideo.play().catch(() => {
-        videoIntroScreen.classList.remove("is-playing");
-      });
-    });
-
-    introVideo.addEventListener("ended", finishVideoIntro);
-    introVideo.addEventListener("error", finishVideoIntro);
 
     document.getElementById("startButton").addEventListener("click", () => {
       resetGame();
